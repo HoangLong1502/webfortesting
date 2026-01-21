@@ -22,11 +22,11 @@ import { FeeTierActions } from '../FeeTierActions';
       />
     );
 
-    // dl
-    expect(screen.getByText('Bạn có chắc chắn muốn xóa hoa hồng này? Hành động này không thể hoàn tác.')).toBeInTheDocument();
+
+    expect(screen.getByText('Bạn có chắc chắn muốn xóa ')).toBeInTheDocument();
   });
 
-  it('should not render dialog when deletingTierId is null - LỖI: Dùng getBy thay vì queryBy', () => {
+  it('should not render dialog when deletingTierId is null', () => {
     render(
       <FeeTierActions
         deletingTierId={null}
@@ -35,7 +35,6 @@ import { FeeTierActions } from '../FeeTierActions';
       />
     );
 
-    //qb
     expect(screen.getByText('Xác nhận xóa')).not.toBeInTheDocument();
   });
 
