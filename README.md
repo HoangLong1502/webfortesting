@@ -101,13 +101,7 @@ pnpm install
 ```
 
 ### 3. Cấu hình environment variables
-```bash
-# Copy và chỉnh sửa file .env cho API
-cp apps/api/.env.example apps/api/.env
-
-# Copy và chỉnh sửa file .env cho Web
-cp apps/web/.env.example apps/web/.env
-```
+Tạo file `.env` trong từng app và khai báo biến cần thiết (DB_HOST, DB_PORT, DB_USERNAME, DB_PASSWORD, DB_NAME, JWT_SECRET, FRONTEND_URL, …). Tham khảo đồng đội hoặc tài liệu dự án.
 
 ### 4. Setup database
 ```bash

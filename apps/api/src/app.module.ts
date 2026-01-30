@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { Module } from '@nestjs/common';
 import databaseConfig from './config/database.config';
 import { envValidationSchema } from './config/validation';
@@ -28,7 +29,7 @@ import { OrdersModule } from './modules/orders/orders.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
-      envFilePath: '.env',
+      envFilePath: join(__dirname, '..', '.env'),
       isGlobal: true,
       load: [databaseConfig],
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -44,8 +45,8 @@ import { OrdersModule } from './modules/orders/orders.module';
           type: 'postgres',
           host: config.get<string>('DB_HOST'),
           port: Number(config.get<number>('DB_PORT') ?? 5432),
-          username: config.get<string>('USERNAME'),
-          password: config.get<string>('PASSWORD'),
+          username: config.get<string>('DB_USERNAME'),
+          password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_NAME'),
           // entities: [Account, CarBrand, CarModel, CarTrim],
           autoLoadEntities: true,
