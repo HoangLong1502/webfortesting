@@ -17,7 +17,15 @@
 - **Break:** ramp 20→50→80→120→150→200 VUs, threshold lỏng để ghi nhận breakpoint.
 - **Capacity:** bậc 10→30→50→70→100 VUs, mỗi bậc 2 phút; p(95)&lt;2s, &lt;5% lỗi.
 
-Chạy với API tự khởi động: `node scripts/run-k6-with-api.cjs api-stress.js` (đổi tên file tùy loại test).
+**Lệnh tự start API rồi chạy k6 (copy nhanh):**
+- `pnpm test:k6:with-api` — Load
+- `pnpm test:k6:stress:with-api` — Stress
+- `pnpm test:k6:spike:with-api` — Spike
+- `pnpm test:k6:soak:with-api` — Soak
+- `pnpm test:k6:break:with-api` — Break
+- `pnpm test:k6:capacity:with-api` — Capacity
+
+Hoặc: `node scripts/run-k6-with-api.cjs <tên-file.js>` (vd: `api-stress.js`, `api-break.js`).
 
 ## Lỗi "connection refused" / "target machine actively refused it"
 
