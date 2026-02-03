@@ -8,17 +8,20 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const config = new DocumentBuilder()
-    .setTitle('2Hand EV Battery Trading API')
-    .setDescription('The API description')
-    .setVersion('1.0')
-    .addBearerAuth() //để nó lấy Bearer token auto luôn khi đã login thành công
-    .addTag('ev-battery-trading')
-    .build();
-  const documentFactory = () => SwaggerModule.createDocument(app, config);
-  SwaggerModule.setup('api', app, documentFactory, {
-    swaggerOptions: { persistAuthorization: true }, // thêm này để Swagger nhớ token
-  });
+  // Bỏ qua Swagger khi FAST_START=1 để start nhanh hơn (vd: chạy k6)
+  if (process.env.FAST_START !== '1') {
+    const config = new DocumentBuilder()
+      .setTitle('2Hand EV Battery Trading API')
+      .setDescription('The API description')
+      .setVersion('1.0')
+      .addBearerAuth()
+      .addTag('ev-battery-trading')
+      .build();
+    const documentFactory = () => SwaggerModule.createDocument(app, config);
+    SwaggerModule.setup('api', app, documentFactory, {
+      swaggerOptions: { persistAuthorization: true },
+    });
+  }
 
   // Bật validation cho toàn bộ ứng dụng
   app.useGlobalPipes(

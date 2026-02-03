@@ -20,6 +20,7 @@ import {
   getRecentPosts,
 } from '@/lib/api/adminDashboardApi';
 import { getAdminDashboardStatistics } from '@/lib/api/adminStatisticsApi';
+import { FEATURE_ADMIN_STATISTICS_ENABLED } from '@/config/constants';
 
 export default function AdminDashboard() {
   // Fetch dashboard data with React Query
@@ -76,6 +77,7 @@ export default function AdminDashboard() {
     queryFn: getAdminDashboardStatistics,
     refetchInterval: 30000,
     staleTime: 10000,
+    enabled: FEATURE_ADMIN_STATISTICS_ENABLED,
   });
 
   const isLoading =

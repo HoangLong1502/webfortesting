@@ -8,6 +8,7 @@ import { cn } from '@/lib/utils';
 import { User, Bookmark, ChevronDown, MessageCircle } from 'lucide-react';
 import { Account } from '@/types/account';
 import { isValidAvatarUrl } from '@/lib/validation/file-validation';
+import { FEATURE_BOOKMARKS_ENABLED, FEATURE_CHAT_ENABLED } from '@/config/constants';
 
 interface UserActionsProps {
   className?: string;
@@ -26,32 +27,33 @@ export function UserActions({
     return (
       <div className={cn('flex items-center gap-2 sm:gap-3 flex-wrap', className)}>
         {/* User-specific action buttons - Only show for authenticated users with valid user data */}
-        {user && (
+        {user && (FEATURE_BOOKMARKS_ENABLED || FEATURE_CHAT_ENABLED) && (
           <div className="flex items-center gap-1 sm:gap-2">
-            {/* Bookmark Button */}
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200 group relative rounded-full p-2 h-9 w-9"
-            >
-              <Link href="/bookmarks" className="flex items-center justify-center">
-                <Bookmark className="h-5 w-5" />
-              </Link>
-            </Button>
-
-            {/* Messages Button */}
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200 group relative rounded-full p-2 h-9 w-9"
-              title="Tin nhắn"
-            >
-              <Link href="/chat" className="flex items-center justify-center">
-                <MessageCircle className="h-5 w-5" />
-              </Link>
-            </Button>
+            {FEATURE_BOOKMARKS_ENABLED && (
+              <Button
+                asChild
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200 group relative rounded-full p-2 h-9 w-9"
+              >
+                <Link href="/bookmarks" className="flex items-center justify-center">
+                  <Bookmark className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
+            {FEATURE_CHAT_ENABLED && (
+              <Button
+                asChild
+                variant="ghost"
+                size="sm"
+                className="text-gray-600 hover:text-gray-900 hover:bg-gray-100 transition-colors duration-200 group relative rounded-full p-2 h-9 w-9"
+                title="Tin nhắn"
+              >
+                <Link href="/chat" className="flex items-center justify-center">
+                  <MessageCircle className="h-5 w-5" />
+                </Link>
+              </Button>
+            )}
           </div>
         )}
 

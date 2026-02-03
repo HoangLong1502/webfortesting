@@ -3,6 +3,7 @@ import HeartToggle from './HeartToggle';
 import { createBookmark, deleteBookmark, getAllBookmarks } from '@/lib/api/bookmarkApi';
 import type { Bookmark } from '@/types/bookmark';
 import { useRouter } from 'next/navigation';
+import { FEATURE_BOOKMARKS_ENABLED } from '@/config/constants';
 
 export function HeartCallApi({
   postId,
@@ -11,6 +12,7 @@ export function HeartCallApi({
   postId: number;
   initialBookmark?: Bookmark | null;
 }) {
+  if (!FEATURE_BOOKMARKS_ENABLED) return null;
   const [bookmark, setBookmark] = useState<Bookmark | null>(initialBookmark ?? null);
   const [busy, setBusy] = useState(false);
   const router = useRouter();

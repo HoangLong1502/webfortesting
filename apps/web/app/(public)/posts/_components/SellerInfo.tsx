@@ -27,6 +27,7 @@ import {
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
 import { useState } from 'react';
+import { FEATURE_CHAT_ENABLED, FEATURE_RATINGS_ENABLED } from '@/config/constants';
 
 interface SellerInfoProps {
   account: AccountUI | undefined;
@@ -70,26 +71,23 @@ export function SellerInfo({ account, post }: SellerInfoProps) {
   });
 
   const handleContactSeller = async () => {
-    // Check if user is logged in
+    if (!FEATURE_CHAT_ENABLED) {
+      toast.error('Tính năng tin nhắn tạm thời đóng. Vui lòng xem SĐT khi đã mua.');
+      return;
+    }
     if (!isLoggedIn) {
       toast.error('Vui lòng đăng nhập để liên hệ người bán');
       router.push('/login');
       return;
     }
-
-    // Check if user is trying to contact themselves
     if (user?.id === account?.id) {
       toast.error('Bạn không thể liên hệ với chính mình');
       return;
     }
-
     try {
-      // Create or get existing conversation
       const conversation = await createConversationMutation.mutateAsync({
         postId: post.id,
       });
-
-      // Navigate to chat page with conversation ID
       router.push(`/chat/${conversation.id}`);
       toast.success('Đang chuyển đến cuộc trò chuyện...');
     } catch (error) {
@@ -187,7 +185,7 @@ export function SellerInfo({ account, post }: SellerInfoProps) {
               )}
             </div>
             {/* ⭐ Rating Display */}
-            {!ratingLoading && (
+            {FEATURE_RATINGS_ENABLED && !ratingLoading && (
               <SellerRatingDisplay averageRating={averageRating} totalReviews={totalReviews} />
             )}
           </div>
@@ -246,15 +244,17 @@ export function SellerInfo({ account, post }: SellerInfoProps) {
             <BuyerContractInfo listingId={post.id} buyerId={user.id} enabled={true} />
           )}
 
-          <button
-            onClick={handleContactSeller}
-            disabled={createConversationMutation.isPending}
-            className="w-full bg-[#048C73] hover:bg-[#037A66] text-white py-2 px-4 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {createConversationMutation.isPending
-              ? 'Đang tạo cuộc trò chuyện...'
-              : 'Liên hệ người bán'}
-          </button>
+          {FEATURE_CHAT_ENABLED && (
+            <button
+              onClick={handleContactSeller}
+              disabled={createConversationMutation.isPending}
+              className="w-full bg-[#048C73] hover:bg-[#037A66] text-white py-2 px-4 rounded-lg font-bold transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {createConversationMutation.isPending
+                ? 'Đang tạo cuộc trò chuyện...'
+                : 'Liên hệ người bán'}
+            </button>
+          )}
 
           {/* Phone Button - show real phone if user has active order */}
           {account.phone && canSeePhone ? (

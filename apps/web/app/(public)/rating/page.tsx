@@ -12,6 +12,7 @@ import { useRouter } from 'next/navigation';
 import { getMyGivenRatings, getMyReceivedRatings, getSellerRatingStats } from '@/lib/api/ratingApi';
 import type { RatingResponse } from '@/types/rating';
 import Link from 'next/link';
+import { FEATURE_RATINGS_ENABLED } from '@/config/constants';
 
 function RatingStars({ rating }: { rating: number }) {
   return (
@@ -135,22 +136,33 @@ export default function RatingPage() {
   const { data: myStats, isLoading: isLoadingStats } = useQuery({
     queryKey: ['myRatingStats', user?.id],
     queryFn: () => getSellerRatingStats(user!.id),
-    enabled: !!user?.id && isLoggedIn,
+    enabled: !!user?.id && isLoggedIn && FEATURE_RATINGS_ENABLED,
   });
 
   // Fetch given ratings
   const { data: givenRatings, isLoading: isLoadingGiven } = useQuery({
     queryKey: ['myGivenRatings'],
     queryFn: () => getMyGivenRatings({ page: 1, limit: 50 }),
-    enabled: !!user?.id && isLoggedIn,
+    enabled: !!user?.id && isLoggedIn && FEATURE_RATINGS_ENABLED,
   });
 
   // Fetch received ratings
   const { data: receivedRatings, isLoading: isLoadingReceived } = useQuery({
     queryKey: ['myReceivedRatings'],
     queryFn: () => getMyReceivedRatings({ page: 1, limit: 50 }),
-    enabled: !!user?.id && isLoggedIn,
+    enabled: !!user?.id && isLoggedIn && FEATURE_RATINGS_ENABLED,
   });
+
+  if (!FEATURE_RATINGS_ENABLED) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h2 className="text-xl font-medium text-gray-600 mb-2">Đánh giá</h2>
+          <p className="text-gray-500">Tính năng tạm thời đóng để tối ưu hệ thống.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (authLoading) {
     return (

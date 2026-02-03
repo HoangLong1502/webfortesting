@@ -25,6 +25,7 @@ import {
   getTotalRevenue,
 } from '@/lib/api/transactionApi';
 import { PaymentOrdersTab } from './_components';
+import { FEATURE_ADMIN_STATISTICS_ENABLED } from '@/config/constants';
 
 export default function AdminFinancePage() {
   const [activeTab, setActiveTab] = useState('overview');
@@ -38,27 +39,49 @@ export default function AdminFinancePage() {
     queryFn: getAdminDashboardStatistics,
     refetchInterval: 30000,
     staleTime: 10000,
+    enabled: FEATURE_ADMIN_STATISTICS_ENABLED,
   });
 
   const { data: postPaymentTotal } = useQuery({
     queryKey: ['post-payment-total'],
     queryFn: getPostPaymentTotal,
     refetchInterval: 30000,
+    enabled: FEATURE_ADMIN_STATISTICS_ENABLED,
   });
 
   const { data: platformFeeTotal } = useQuery({
     queryKey: ['platform-fee-total'],
     queryFn: getPlatformFeeTotal,
     refetchInterval: 30000,
+    enabled: FEATURE_ADMIN_STATISTICS_ENABLED,
   });
 
   const { data: totalRevenue } = useQuery({
     queryKey: ['total-revenue'],
     queryFn: getTotalRevenue,
     refetchInterval: 30000,
+    enabled: FEATURE_ADMIN_STATISTICS_ENABLED,
   });
 
   const financial = adminStats?.financial;
+
+  if (!FEATURE_ADMIN_STATISTICS_ENABLED) {
+    return (
+      <main className="flex-1 p-6 space-y-6">
+        <h1 className="text-3xl font-bold text-foreground flex items-center gap-2">
+          <DollarSign className="h-8 w-8" />
+          Quản Lý Tài Chính
+        </h1>
+        <Card>
+          <CardContent className="py-8">
+            <p className="text-muted-foreground text-center">
+              Tính năng thống kê tài chính tạm thời đóng để tối ưu hệ thống.
+            </p>
+          </CardContent>
+        </Card>
+      </main>
+    );
+  }
 
   return (
     <main className="flex-1 p-6 space-y-6">

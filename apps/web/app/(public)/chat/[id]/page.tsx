@@ -25,6 +25,7 @@ import {
   type Contract,
 } from '@/lib/api/transactionApi';
 import type { Message } from '@/types/chat';
+import { FEATURE_CHAT_ENABLED } from '@/config/constants';
 
 export default function ChatPage() {
   const params = useParams();
@@ -218,6 +219,17 @@ export default function ChatPage() {
       leaveConversation({ conversationId: activeChatId });
     };
   }, [activeChatId, isConnected, joinConversation, leaveConversation]);
+
+  if (!FEATURE_CHAT_ENABLED) {
+    return (
+      <div className="h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-xl font-medium text-gray-600 mb-2">Tin nhắn</h2>
+          <p className="text-gray-500">Tính năng tạm thời đóng để tối ưu hệ thống.</p>
+        </div>
+      </div>
+    );
+  }
 
   // Show loading while checking authentication
   if (loading) {

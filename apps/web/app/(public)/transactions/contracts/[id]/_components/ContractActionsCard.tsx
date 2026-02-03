@@ -7,6 +7,7 @@ import { RatingForm } from './RatingForm';
 import { ContractStatus } from '@/lib/api/transactionApi';
 import { checkUserRatedPost } from '@/lib/api/ratingApi';
 import { useQuery } from '@tanstack/react-query';
+import { FEATURE_RATINGS_ENABLED } from '@/config/constants';
 
 interface ContractActionsCardProps {
   isBuyer: boolean;
@@ -29,12 +30,13 @@ export function ContractActionsCard({
   const { data: ratingStatus, isLoading: isCheckingRating } = useQuery({
     queryKey: ['ratingStatus', postId],
     queryFn: () => checkUserRatedPost(postId),
-    enabled: isBuyer && contractStatus === ContractStatus.SUCCESS,
+    enabled: FEATURE_RATINGS_ENABLED && isBuyer && contractStatus === ContractStatus.SUCCESS,
   });
 
   const isContractSuccess = contractStatus === ContractStatus.SUCCESS;
   const hasAlreadyRated = ratingStatus?.hasRated === true;
-  const showRatingForm = isBuyer && isContractSuccess && !hasAlreadyRated && !isCheckingRating;
+  const showRatingForm =
+    FEATURE_RATINGS_ENABLED && isBuyer && isContractSuccess && !hasAlreadyRated && !isCheckingRating;
 
   return (
     <>

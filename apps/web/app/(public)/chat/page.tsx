@@ -4,33 +4,36 @@ import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { useConversations } from '@/hooks/useChat';
 import { useAuth } from '@/lib/auth-context';
+import { FEATURE_CHAT_ENABLED } from '@/config/constants';
 
 export default function ChatIndexPage() {
   const router = useRouter();
   const { isLoggedIn, loading } = useAuth();
   const { data: conversations = [], isLoading: conversationsLoading } = useConversations();
 
-  useEffect(() => {
-    // Don't redirect if still loading auth or conversations
-    if (loading || conversationsLoading) return;
+  if (!FEATURE_CHAT_ENABLED) {
+    return (
+      <div className="h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50">
+        <div className="text-center">
+          <h2 className="text-xl font-medium text-gray-600 mb-2">Tin nhắn</h2>
+          <p className="text-gray-500">Tính năng tạm thời đóng để tối ưu hệ thống.</p>
+        </div>
+      </div>
+    );
+  }
 
-    // Redirect to login if not authenticated
+  useEffect(() => {
+    if (loading || conversationsLoading) return;
     if (!isLoggedIn) {
       router.replace('/login');
       return;
     }
-
-    // Redirect to first conversation if available
     if (conversations.length > 0) {
       const firstConversation = conversations[0];
-      if (firstConversation) {
-        router.replace(`/chat/${firstConversation.id}`);
-      }
+      if (firstConversation) router.replace(`/chat/${firstConversation.id}`);
     }
-    // If no conversations, stay on this page to show "no conversations" message
   }, [router, loading, conversationsLoading, isLoggedIn, conversations]);
 
-  // Show loading while checking auth and conversations
   if (loading || conversationsLoading) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50">
@@ -43,7 +46,6 @@ export default function ChatIndexPage() {
     );
   }
 
-  // Show no conversations message if user has no conversations
   if (conversations.length === 0) {
     return (
       <div className="h-[calc(100vh-4rem)] flex items-center justify-center bg-gray-50">

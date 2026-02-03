@@ -2,6 +2,7 @@
 
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/axios';
+import { FEATURE_RATINGS_ENABLED } from '@/config/constants';
 
 interface SellerRatingStats {
   averageRating: number;
@@ -40,7 +41,7 @@ export function useSellerRating(sellerId?: string) {
         return { averageRating: 0, totalReviews: 0 };
       }
     },
-    enabled: !!sellerId, // Chỉ fetch khi có sellerId
+    enabled: !!sellerId && FEATURE_RATINGS_ENABLED,
     staleTime: 5 * 60 * 1000, // Cache 5 phút
   });
 

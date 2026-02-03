@@ -12,17 +12,13 @@ import { BikeCatalogModule } from './modules/catalogs/bikes/bike-catalog.module'
 import { BatteryCatalogModule } from './modules/catalogs/batteries/battery-catalog.module';
 import { PostsModule } from './modules/posts/posts.module';
 import { UploadModule } from './modules/upload/upload.module';
-import { PostBookmarksModule } from './modules/post-bookmarks/post-bookmarks.module';
 import { AddressModule } from './modules/address/address.module';
 import { PostReviewModule } from './modules/post-review/post-review.module';
 import { PayosModule } from './modules/payos/payos.module';
-import { PostRatingModule } from './modules/post-ratings/post-ratings.module';
 import { SettingsModule } from './modules/settings/settings.module';
 import { ServiceTypesModule } from './modules/service-types/service-types.module';
 import { WalletsModule } from './modules/wallets/wallets.module';
 import { TransactionsModule } from './modules/transactions/transactions.module';
-import { ChatModule } from './modules/chat/chat.module';
-import { AdminStatisticsModule } from './modules/admin-statistics/admin-statistics.module';
 import { OrdersModule } from './modules/orders/orders.module';
 // import { DebugMiddleware } from './core/middleware/debug.middleware';
 
@@ -40,6 +36,10 @@ import { OrdersModule } from './modules/orders/orders.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const isDev = config.get<string>('NODE_ENV') === 'development';
+        // Dev: ít retry + timeout ngắn để start nhanh hoặc fail nhanh
+        const retryAttempts = isDev ? 2 : 5;
+        const retryDelay = isDev ? 1000 : 3000;
+        const connectionTimeoutMillis = isDev ? 10_000 : 60_000;
 
         return {
           type: 'postgres',
@@ -48,17 +48,15 @@ import { OrdersModule } from './modules/orders/orders.module';
           username: config.get<string>('DB_USERNAME'),
           password: config.get<string>('DB_PASSWORD'),
           database: config.get<string>('DB_NAME'),
-          // entities: [Account, CarBrand, CarModel, CarTrim],
           autoLoadEntities: true,
-          synchronize: isDev, // chỉ tự động đồng bộ hóa CSDL ở môi trường development
-          retryAttempts: 5,
-          retryDelay: 3000,
-          // logging: isDev, // chỉ bật log ở môi trường development
+          synchronize: isDev,
+          retryAttempts,
+          retryDelay,
           extra: {
-            max: 10,
-            min: 2,
+            max: isDev ? 5 : 10,
+            min: isDev ? 1 : 2,
             idleTimeoutMillis: 600_000,
-            connectionTimeoutMillis: 60_000,
+            connectionTimeoutMillis,
           },
         };
       },
@@ -70,17 +68,13 @@ import { OrdersModule } from './modules/orders/orders.module';
     BatteryCatalogModule,
     PostsModule,
     UploadModule,
-    PostBookmarksModule,
     AddressModule,
     PostReviewModule,
     PayosModule,
-    PostRatingModule,
     SettingsModule,
     ServiceTypesModule,
     WalletsModule,
     TransactionsModule,
-    ChatModule,
-    AdminStatisticsModule,
     OrdersModule,
   ],
   controllers: [],

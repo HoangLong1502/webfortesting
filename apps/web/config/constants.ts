@@ -18,3 +18,9 @@ export const ALLOWED_IMAGE_DOMAINS = [
   'lh3.googleusercontent.com',
   'avatar.iran.liara.run',
 ];
+
+// Feature flags: tắt API tương ứng đã bị cắt để giảm tải, bật lại khi cần
+export const FEATURE_CHAT_ENABLED = false;
+export const FEATURE_BOOKMARKS_ENABLED = false;
+export const FEATURE_RATINGS_ENABLED = false;
+export const FEATURE_ADMIN_STATISTICS_ENABLED = false;

@@ -23,6 +23,7 @@ import { getMyWallet } from '@/lib/api/walletApi';
 import { TopupModal } from '@/components/TopupModal';
 import { getBuyerContracts, ContractStatus } from '@/lib/api/transactionApi';
 import { Badge } from '@/components/ui/badge';
+import { FEATURE_BOOKMARKS_ENABLED, FEATURE_RATINGS_ENABLED } from '@/config/constants';
 
 interface UserSidebarProps {
   isOpen: boolean;
@@ -72,11 +73,11 @@ export function UserSidebar({ isOpen, onClose, user, onLogout }: UserSidebarProp
 
   const menuItems = [
     { label: 'Hồ sơ', href: '/profile', icon: User },
-    { label: 'Bookmarks', href: '/bookmarks', icon: Bookmark },
+    ...(FEATURE_BOOKMARKS_ENABLED ? [{ label: 'Bookmarks', href: '/bookmarks', icon: Bookmark }] : []),
     { label: 'Quản lý đơn hàng', href: '/my-orders', icon: ShoppingBag },
-    { label: 'Đánh giá', href: '/rating', icon: Star },
+    ...(FEATURE_RATINGS_ENABLED ? [{ label: 'Đánh giá', href: '/rating', icon: Star }] : []),
     { label: 'Lịch sử giao dịch', href: '/wallet', icon: Clock },
-  ];
+  ].filter(Boolean) as { label: string; href: string; icon: typeof User }[];
 
   const handleTopupClick = () => {
     onClose();

@@ -74,6 +74,7 @@ async function main() {
     stdio: 'inherit',
     shell: true,
     detached: process.platform !== 'win32',
+    env: { ...process.env, FAST_START: '1' },
   });
 
   if (apiProc.unref) apiProc.unref();
