@@ -14,17 +14,17 @@ const BASE_URL = __ENV.BASE_URL || 'http://localhost:8000';
 
 export const options = {
   stages: [
-    { duration: '30s', target: 20 },
-    { duration: '30s', target: 50 },
-    { duration: '30s', target: 80 },
-    { duration: '30s', target: 120 },
-    { duration: '30s', target: 150 },
-    { duration: '1m', target: 200 },
-    { duration: '30s', target: 0 },
+    { duration: '15s', target: 200 },
+    { duration: '20s', target: 500 },
+    { duration: '25s', target: 1000 },
+    { duration: '30s', target: 2000 },
+    { duration: '45s', target: 3000 },
+    { duration: '1m', target: 4000 },
+    { duration: '20s', target: 0 },
   ],
-  // Break test: threshold lỏng — chấp nhận lỗi/latency cao để ghi nhận breakpoint
+  // Break test: threshold lỏng — test chạy đến khi >50% lỗi thì dừng (đã tìm thấy breakpoint)
   thresholds: {
-    http_req_duration: ['p(95)<10000'],
+    http_req_duration: ['p(95)<20000'],
     http_req_failed: ['rate<0.5'],
   },
 };
@@ -45,5 +45,5 @@ export default function () {
   check(res, {
     [`${endpoint.name} status 200`]: (r) => r.status === 200,
   });
-  sleep(0.2 + Math.random() * 0.5);
+  sleep(0.01 + Math.random() * 0.04);
 }
